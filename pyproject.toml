@@ -1,0 +1,42 @@
+[project]
+name = "firewatch-ci"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "tobni-islam",email = "islamtobni@gmail.com"}
+]
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "torch (>=2.12.0,<3.0.0)",
+    "torchvision (>=0.27.0,<0.28.0)",
+    "ultralytics (>=8.4.51,<9.0.0)",
+    "dvc (>=3.67.1,<4.0.0)",
+    "mlflow (>=3.12.0,<4.0.0)",
+    "bentoml (>=1.4.39,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+
+[tool.poetry.dependencies]
+torch = {source = "pytorch-cpu"}
+torchvision = {source = "pytorch-cpu"}
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.3,<10.0.0)",
+    "black (>=26.5.0,<27.0.0)",
+    "flake8 (>=7.3.0,<8.0.0)",
+    "isort (>=8.0.1,<9.0.0)",
+    "pre-commit (>=4.6.0,<5.0.0)",
+    "pytest-timeout (>=2.4.0,<3.0.0)",
+    "kaggle (>=2.1.2,<3.0.0)"
+]
