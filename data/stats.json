@@ -1,0 +1,13 @@
+{
+  "total_valid": 17221,
+  "skipped": 0,
+  "splits": {
+    "train": 13776,
+    "val": 1722,
+    "test": 1723
+  },
+  "class_counts": {
+    "fire": 9550,
+    "smoke": 11814
+  }
+}

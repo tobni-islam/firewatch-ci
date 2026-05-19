@@ -1,0 +1,12 @@
+stages:
+  preprocess:
+    cmd: python src/preprocess.py --config params.yaml
+    deps:
+      - src/preprocess.py
+      - data/raw/
+      - params.yaml
+    outs:
+      - data/processed/
+    metrics:
+      - data/stats.json:
+          cache: false
