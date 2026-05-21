@@ -1,2 +1,7 @@
+[core]
+    remote = origin
 ['remote "origin"']
     url = https://dagshub.com/islam_tb/firewatch-ci.dvc
+    user = islam_tb
+    auth = basic
+    password = 5ea625b9c83b70a6bcb3889c23a98130374e251b
