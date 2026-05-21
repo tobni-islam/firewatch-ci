@@ -7,7 +7,12 @@ from ultralytics import YOLO
 
 def train(cfg: dict, epochs: int, smoke: bool = False) -> None:
     dataset = "data/sample/dataset.yaml" if smoke else "data/dataset.yaml"
-    out_dir = "models/smoke_weights" if smoke else "models/weights"
+    out_dir = (
+        str(Path("models/smoke_weights").resolve())
+        if smoke
+        else str(Path("models/weights").resolve())
+    )
+
     metrics_file = (
         "metrics/smoke_results.json" if smoke else "metrics/train_results.json"
     )
