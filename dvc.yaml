@@ -10,3 +10,29 @@ stages:
     metrics:
       - data/stats.json:
           cache: false
+
+  train_smoke:
+    cmd: python src/train.py --config params.yaml --smoke
+    deps:
+      - src/train.py
+      - data/sample/
+      - params.yaml
+    outs:
+      - models/smoke_weights/
+    metrics:
+      - metrics/smoke_results.json:
+          cache: false
+
+  evaluate:
+    cmd: >-
+      python src/evaluate.py
+      --config params.yaml
+      --weights models/smoke_weights/train/weights/best.pt
+      --smoke
+    deps:
+      - src/evaluate.py
+      - models/smoke_weights/
+      - params.yaml
+    metrics:
+      - metrics/eval_results.json:
+          cache: false
