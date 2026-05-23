@@ -11,6 +11,11 @@ stages:
       - data/stats.json:
           cache: false
 
+  augment:
+    cmd: python src/augment.py --config params.yaml
+    deps: [src/augment.py, data/processed/train/, params.yaml]
+    outs: [data/augmented/]
+
   train_smoke:
     cmd: python src/train.py --config params.yaml --smoke
     deps:

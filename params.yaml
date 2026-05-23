@@ -6,6 +6,9 @@ data:
   val_ratio: 0.1
   test_ratio: 0.1
 
+augment:
+  n_per_image: 5
+
 model:
   architecture: yolov8s
   num_classes: 2
@@ -27,3 +30,4 @@ evaluate:
   conf_threshold: 0.25
   iou_threshold: 0.45
   smoke_map_threshold: 0.65
+  fire_map_threshold: 0.80
