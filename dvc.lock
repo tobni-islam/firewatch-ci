@@ -26,3 +26,25 @@ stages:
       hash: md5
       md5: 1e06de75110906a19a657fb7cc3ed6f2
       size: 177
+  augment:
+    cmd: python src/augment.py --config params.yaml
+    deps:
+    - path: data/processed/train/
+      hash: md5
+      md5: d253c5bcc14f833b3f20c75101268522.dir
+      size: 2010027305
+      nfiles: 27552
+    - path: params.yaml
+      hash: md5
+      md5: 1ac0930b822bc7b96baafc897ace586e
+      size: 497
+    - path: src/augment.py
+      hash: md5
+      md5: 417b4fa5f75ab6175611821b26675fc1
+      size: 3230
+    outs:
+    - path: data/augmented/
+      hash: md5
+      md5: e5c70ec70d6366be3dc29f07042da048.dir
+      size: 6730538872
+      nfiles: 100612

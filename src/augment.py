@@ -32,7 +32,7 @@ def build_transform():
             A.RandomFog(fog_coef_lower=0.1, fog_coef_upper=0.3, p=0.3),
             A.RandomRain(p=0.15),
             A.Blur(blur_limit=5, p=0.2),
-            A.CoarseDropout(max_holes=8, max_height=32, max_width=32, p=0.2),
+            A.GaussNoise(var_limit=(10.0, 50.0), p=0.2),
             A.HorizontalFlip(p=0.5),
         ],
         bbox_params=A.BboxParams(
