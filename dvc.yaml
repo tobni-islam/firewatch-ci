@@ -1,12 +1,8 @@
 stages:
   preprocess:
     cmd: python src/preprocess.py --config params.yaml
-    deps:
-      - src/preprocess.py
-      - data/raw/
-      - params.yaml
-    outs:
-      - data/processed/
+    deps: [src/preprocess.py, data/raw/, params.yaml]
+    outs: [data/processed/]
     metrics:
       - data/stats.json:
           cache: false
@@ -18,26 +14,30 @@ stages:
 
   train_smoke:
     cmd: python src/train.py --config params.yaml --smoke
-    deps:
-      - src/train.py
-      - data/sample/
-      - params.yaml
-    outs:
-      - models/smoke_weights/
+    deps: [src/train.py, data/sample/, params.yaml]
+    outs: [models/smoke_weights/]
     metrics:
       - metrics/smoke_results.json:
           cache: false
 
+  evaluate_smoke:
+    cmd: python src/evaluate.py --config params.yaml --weights models/smoke_weights/train/weights/best.pt --smoke
+    deps: [src/evaluate.py, models/smoke_weights/, params.yaml]
+    metrics:
+      - metrics/smoke_eval.json:
+          cache: false
+
+  train:
+    cmd: python src/train.py --config params.yaml
+    deps: [src/train.py, data/augmented/, params.yaml]
+    outs: [models/weights/]
+    metrics:
+      - metrics/train_results.json:
+          cache: false
+
   evaluate:
-    cmd: >-
-      python src/evaluate.py
-      --config params.yaml
-      --weights models/smoke_weights/train/weights/best.pt
-      --smoke
-    deps:
-      - src/evaluate.py
-      - models/smoke_weights/
-      - params.yaml
+    cmd: python src/evaluate.py --config params.yaml --weights models/weights/train/weights/best.pt --check-threshold
+    deps: [src/evaluate.py, models/weights/, data/processed/test/, params.yaml]
     metrics:
       - metrics/eval_results.json:
           cache: false

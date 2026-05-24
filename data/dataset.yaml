@@ -1,0 +1,8 @@
+path: .
+train: data/augmented/train/images
+val:   data/processed/val/images
+test:  data/processed/test/images
+nc: 2
+names:
+  0: fire
+  1: smoke
