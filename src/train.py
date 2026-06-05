@@ -41,6 +41,22 @@ def train(cfg, epochs, smoke=False):
             }
         )
         model = YOLO(f"{cfg['model']['architecture']}.pt")
+
+        aug = {
+            k: cfg["train"].get(k, v)
+            for k, v in {
+                "mosaic": 1.0,
+                "hsv_h": 0.015,
+                "hsv_s": 0.7,
+                "hsv_v": 0.4,
+                "fliplr": 0.5,
+                "degrees": 0.0,
+                "scale": 0.5,
+                "translate": 0.1,
+                "cls": 1.5,
+            }.items()
+        }
+
         results = model.train(
             data=dataset,
             epochs=epochs,
@@ -52,8 +68,10 @@ def train(cfg, epochs, smoke=False):
             name="train",
             exist_ok=True,
             seed=cfg["train"]["seed"],
-            save_period=10,  # checkpoint every 10 epochs — critical for Colab free tier
+            save_period=10,  # checkpoint every 10 epochs
+            **aug,
         )
+
         rd = results.results_dict
         metrics = {
             "run_id": run.info.run_id,

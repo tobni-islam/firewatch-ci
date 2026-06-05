@@ -7,11 +7,6 @@ stages:
       - data/stats.json:
           cache: false
 
-  augment:
-    cmd: python src/augment.py --config params.yaml
-    deps: [src/augment.py, data/processed/train/, params.yaml]
-    outs: [data/augmented/]
-
   train_smoke:
     cmd: python src/train.py --config params.yaml --smoke
     deps: [src/train.py, data/sample/, params.yaml]
@@ -29,7 +24,7 @@ stages:
 
   train:
     cmd: python src/train.py --config params.yaml
-    deps: [src/train.py, data/augmented/, params.yaml]
+    deps: [src/train.py, data/processed/, params.yaml]
     outs: [models/weights/]
     metrics:
       - metrics/train_results.json:

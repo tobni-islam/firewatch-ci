@@ -6,9 +6,6 @@ data:
   val_ratio: 0.1
   test_ratio: 0.1
 
-augment:
-  n_per_image: 5
-
 model:
   architecture: yolov8s
   num_classes: 2
@@ -21,6 +18,15 @@ train:
   lr0: 0.01
   weight_decay: 0.0005
   seed: 42
+  mosaic: 1.0      # 4-image mosaic
+  hsv_h: 0.03      # broader hue range
+  hsv_s: 0.8       # saturation variation
+  hsv_v: 0.5       # brightness variation
+  fliplr: 0.5      # horizontal flip
+  degrees: 5.0     # slight rotation
+  scale: 0.5       # scale jitter
+  translate: 0.1
+  cls: 1.5
 
 smoke_train:
   epochs: 5
