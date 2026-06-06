@@ -1,7 +1,6 @@
-"""src/train.py — Week 2: full MLflow logging."""
-
 import argparse
 import json
+import os
 import random
 from pathlib import Path
 import mlflow
@@ -9,6 +8,12 @@ import numpy as np
 import torch
 import yaml
 from ultralytics import YOLO
+
+# Try importing dagshub for remote logging integration
+try:
+    import dagshub
+except ImportError:
+    dagshub = None
 
 
 def set_seeds(seed):
@@ -21,12 +26,22 @@ def set_seeds(seed):
 def train(cfg, epochs, smoke=False):
     set_seeds(cfg["train"]["seed"])
     dataset = "data/sample/dataset.yaml" if smoke else "data/dataset.yaml"
-    out_dir = "models/smoke_weights" if smoke else "models/weights"
+
+    out_dir_base = "models/smoke_weights" if smoke else "models/weights"
+    out_dir_abs = Path(out_dir_base).resolve()
+
     mfile = "metrics/smoke_results.json" if smoke else "metrics/train_results.json"
     bs = cfg["smoke_train" if smoke else "train"]["batch_size"]
 
-    Path(out_dir).mkdir(parents=True, exist_ok=True)
+    out_dir_abs.mkdir(parents=True, exist_ok=True)
     Path("metrics").mkdir(exist_ok=True)
+
+    if dagshub and "DAGSHUB_TOKEN" in os.environ:
+        repo_owner = os.getenv("DAGSHUB_REPO_OWNER", "islam-tb")
+        repo_name = os.getenv("DAGSHUB_REPO_NAME", "firewatch-ci")
+        dagshub.init(repo_owner=repo_owner, repo_name=repo_name, mlflow=True)
+    else:
+        print("DagsHub credentials missing or library not installed. Logging locally.")
 
     mlflow.set_experiment("firewatch-ci")
     with mlflow.start_run(run_name="smoke-train" if smoke else "full-train") as run:
@@ -64,11 +79,11 @@ def train(cfg, epochs, smoke=False):
             batch=bs,
             lr0=cfg["train"]["lr0"],
             weight_decay=cfg["train"]["weight_decay"],
-            project=out_dir,
+            project=str(out_dir_abs),
             name="train",
             exist_ok=True,
             seed=cfg["train"]["seed"],
-            save_period=10,  # checkpoint every 10 epochs
+            save_period=10,
             **aug,
         )
 
@@ -80,12 +95,23 @@ def train(cfg, epochs, smoke=False):
             "precision": round(float(rd.get("metrics/precision(B)", 0.0)), 4),
             "recall": round(float(rd.get("metrics/recall(B)", 0.0)), 4),
         }
-        mlflow.log_metrics({k: v for k, v in metrics.items() if k != "run_id"})
-        mlflow.log_artifact(f"{out_dir}/train/weights/best.pt", artifact_path="model")
+
         with open(mfile, "w") as f:
             json.dump(metrics, f, indent=2)
         print(f"run_id : {run.info.run_id}")
         print(f"mAP50  : {metrics['mAP50']:.4f}")
+
+        mlflow.log_metrics({k: v for k, v in metrics.items() if k != "run_id"})
+
+        best_weights = out_dir_abs / "train" / "weights" / "best.pt"
+        if best_weights.exists():
+            try:
+                mlflow.log_artifact(str(best_weights), artifact_path="model")
+                print("Successfully logged weights artifact to MLflow.")
+            except Exception as e:
+                print(f"Failed to log artifact to MLflow: {e}")
+        else:
+            print(f"Expected weights file not found at: {best_weights}")
 
 
 if __name__ == "__main__":
