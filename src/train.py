@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 import random
 from pathlib import Path
 import mlflow
@@ -8,12 +7,6 @@ import numpy as np
 import torch
 import yaml
 from ultralytics import YOLO
-
-# Try importing dagshub for remote logging integration
-try:
-    import dagshub
-except ImportError:
-    dagshub = None
 
 
 def set_seeds(seed):
@@ -35,13 +28,6 @@ def train(cfg, epochs, smoke=False):
 
     out_dir_abs.mkdir(parents=True, exist_ok=True)
     Path("metrics").mkdir(exist_ok=True)
-
-    if dagshub and "DAGSHUB_TOKEN" in os.environ:
-        repo_owner = os.getenv("DAGSHUB_REPO_OWNER", "islam-tb")
-        repo_name = os.getenv("DAGSHUB_REPO_NAME", "firewatch-ci")
-        dagshub.init(repo_owner=repo_owner, repo_name=repo_name, mlflow=True)
-    else:
-        print("DagsHub credentials missing or library not installed. Logging locally.")
 
     mlflow.set_experiment("firewatch-ci")
     with mlflow.start_run(run_name="smoke-train" if smoke else "full-train") as run:
