@@ -10,8 +10,8 @@ stages:
       nfiles: 43055
     - path: params.yaml
       hash: md5
-      md5: a0b427a9846635d0b9cc333f4fbcb928
-      size: 443
+      md5: a151844cad39685fd23364896ae6664f
+      size: 765
     - path: src/preprocess.py
       hash: md5
       md5: 2de459aab328a45217a782c5f416c82a
@@ -24,8 +24,8 @@ stages:
       nfiles: 34442
     - path: data/stats.json
       hash: md5
-      md5: 1e06de75110906a19a657fb7cc3ed6f2
-      size: 177
+      md5: a51f4184c9168434f50983ba0d645a44
+      size: 178
   augment:
     cmd: python src/augment.py --config params.yaml
     deps:
@@ -67,10 +67,63 @@ stages:
     outs:
     - path: metrics/train_results.json
       hash: md5
-      md5: bfd32741a1eccdce5d3a6ae8bd19b64e
-      size: 134
+      md5: 74a5ff65fb5a12d13f7e16cf3e8cbfa9
+      size: 135
     - path: models/weights/
       hash: md5
       md5: 33187b7ac84ad558e19c0b00711136a0.dir
       size: 588622091
       nfiles: 35
+  evaluate:
+    cmd: python src/evaluate.py --config params.yaml --weights
+      models/weights/train/weights/best.pt --check-threshold
+    deps:
+    - path: data/processed/test/
+      hash: md5
+      md5: 61606ae8a66681f40fd66ba837bd578c.dir
+      size: 247153847
+      nfiles: 3446
+    - path: models/weights/
+      hash: md5
+      md5: 33187b7ac84ad558e19c0b00711136a0.dir
+      size: 588622091
+      nfiles: 35
+    - path: params.yaml
+      hash: md5
+      md5: a151844cad39685fd23364896ae6664f
+      size: 765
+    - path: src/evaluate.py
+      hash: md5
+      md5: 1210c36a815bdfedda7b9487bc46d50e
+      size: 1411
+    outs:
+    - path: metrics/eval_results.json
+      hash: md5
+      md5: ad4621ab3abb1a0f905d2a355c76234c
+      size: 113
+  train_smoke:
+    cmd: python src/train.py --config params.yaml --smoke
+    deps:
+    - path: data/sample/
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: params.yaml
+      hash: md5
+      md5: a151844cad39685fd23364896ae6664f
+      size: 765
+    - path: src/train.py
+      hash: md5
+      md5: 798ff9052ea7b68e993112cff89dc5cb
+      size: 3730
+    outs:
+    - path: metrics/smoke_results.json
+      hash: md5
+      md5: ce7ff6022575d031b68321dc0837243b
+      size: 70
+    - path: models/smoke_weights/
+      hash: md5
+      md5: d2a9b4532489c8ad166eb8d1915d74a7.dir
+      size: 49678852
+      nfiles: 21
