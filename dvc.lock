@@ -48,3 +48,29 @@ stages:
       md5: e5c70ec70d6366be3dc29f07042da048.dir
       size: 6730538872
       nfiles: 100612
+  train:
+    cmd: python src/train.py --config params.yaml
+    deps:
+    - path: data/processed/
+      hash: md5
+      md5: 23aa316d4e019cfb3322895ffb4a361f.dir
+      size: 2502506262
+      nfiles: 34442
+    - path: params.yaml
+      hash: md5
+      md5: a151844cad39685fd23364896ae6664f
+      size: 765
+    - path: src/train.py
+      hash: md5
+      md5: 798ff9052ea7b68e993112cff89dc5cb
+      size: 3730
+    outs:
+    - path: metrics/train_results.json
+      hash: md5
+      md5: bfd32741a1eccdce5d3a6ae8bd19b64e
+      size: 134
+    - path: models/weights/
+      hash: md5
+      md5: 33187b7ac84ad558e19c0b00711136a0.dir
+      size: 588622091
+      nfiles: 35

@@ -5,3 +5,5 @@
     user = islam_tb
     auth = basic
     password = 5ea625b9c83b70a6bcb3889c23a98130374e251b
+    read_timeout = 600
+    connect_timeout = 600
