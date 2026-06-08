@@ -1,6 +1,7 @@
 import json
-import mlflow
+
 import dagshub
+import mlflow
 from mlflow.tracking import MlflowClient
 
 MODEL_NAME = "firewatch-detector"

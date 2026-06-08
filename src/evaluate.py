@@ -2,6 +2,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+
 import yaml
 from ultralytics import YOLO
 
@@ -46,12 +47,14 @@ if __name__ == "__main__":
         failed = False
         if metrics["smoke_mAP50"] < cfg["evaluate"]["smoke_map_threshold"]:
             print(
-                f"FAIL smoke_mAP50 {metrics['smoke_mAP50']:.3f} < {cfg['evaluate']['smoke_map_threshold']}"
+                f"""FAIL smoke_mAP50 {metrics['smoke_mAP50']:.3f} <
+                {cfg['evaluate']['smoke_map_threshold']}"""
             )
             failed = True
         if metrics["fire_mAP50"] < cfg["evaluate"]["fire_map_threshold"]:
             print(
-                f"FAIL fire_mAP50 {metrics['fire_mAP50']:.3f} < {cfg['evaluate']['fire_map_threshold']}"
+                f"""FAIL fire_mAP50 {metrics['fire_mAP50']:.3f} <
+                {cfg['evaluate']['fire_map_threshold']}"""
             )
             failed = True
         if failed:
