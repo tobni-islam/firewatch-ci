@@ -1,0 +1,41 @@
+name: FireWatch CI/CD Pipeline
+
+on:
+  push:
+    branches: [master, "data/**"]
+    paths: ["data/**", "src/**", "dvc.yaml", "params.yaml", "tests/**"]
+  pull_request:
+    branches: [master]
+
+env:
+  PYTHONDONTWRITEBYTECODE: 1
+  PYTHONUNBUFFERED: 1
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install dev dependencies
+        run: |
+          pip install --upgrade pip
+          pip install black==23.12.1 flake8==7.0.0 isort==5.13.2
+          pip install pytest pytest-timeout pyyaml opencv-python-headless numpy
+
+      - name: black format check
+        run: black --check --line-length 88 src/ tests/
+
+      - name: flake8 lint
+        run: flake8 src/ tests/ --max-line-length 88 --extend-ignore E203,W503
+
+      - name: isort import check
+        run: isort --check-only --profile black src/ tests/
+
+      - name: pytest
+        run: pytest tests/ -v --timeout=30
