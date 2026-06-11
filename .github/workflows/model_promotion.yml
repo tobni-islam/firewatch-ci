@@ -50,7 +50,7 @@ jobs:
 
       - name: Compare vs MLflow baseline
         run: python src/compare_models.py
-        # Exits 1 if new model does not improve — this marks the job as FAILED.
+        # Exits 1 if new model does not improve, this marks the job as FAILED.
         # That is intentional: a regression should be visible in Actions history.
 
       - name: Register and promote to Production
