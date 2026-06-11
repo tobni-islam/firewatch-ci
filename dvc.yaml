@@ -36,3 +36,13 @@ stages:
     metrics:
       - metrics/eval_results.json:
           cache: false
+
+  infer:
+    cmd: python src/batch_inference.py --config params.yaml --weights models/weights/train/weights/best.pt
+    deps:
+      - src/batch_inference.py
+      - models/weights/
+      - data/processed/test/
+      - params.yaml
+    outs:
+      - logs/inference_log.csv
