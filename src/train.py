@@ -55,7 +55,7 @@ def train(cfg, epochs, smoke=False):
                 "degrees": 0.0,
                 "scale": 0.5,
                 "translate": 0.1,
-                "cls": 1.5,
+                "cls": 2.0,
             }.items()
         }
 
