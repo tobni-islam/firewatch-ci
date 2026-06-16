@@ -1,7 +1,7 @@
-path: .
-train: data/processed/train/images
-val:   data/processed/val/images
-test:  data/processed/test/images
+path: data/processed
+train: train/images
+val: val/images
+test: test/images
 nc: 2
 names:
   0: fire
