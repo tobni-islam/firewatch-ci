@@ -10,8 +10,8 @@ stages:
       nfiles: 43055
     - path: params.yaml
       hash: md5
-      md5: a151844cad39685fd23364896ae6664f
-      size: 765
+      md5: 6277c06acd2a352b0376e625b1bc908a
+      size: 764
     - path: src/preprocess.py
       hash: md5
       md5: 9587bb491fa3fbd42418df9df406f6c0
@@ -58,22 +58,22 @@ stages:
       nfiles: 34443
     - path: params.yaml
       hash: md5
-      md5: a151844cad39685fd23364896ae6664f
-      size: 765
+      md5: 6277c06acd2a352b0376e625b1bc908a
+      size: 764
     - path: src/train.py
       hash: md5
-      md5: fc4f1f88d3d471051889375b81065068
+      md5: 2f47af562744a122fd8cedaa6407d91b
       size: 3731
     outs:
     - path: metrics/train_results.json
       hash: md5
-      md5: 5610653e83bb1530a45e65051f987f51
-      size: 135
+      md5: 3281dd22be55f7b08e56f014d0b27b15
+      size: 134
     - path: models/weights/
       hash: md5
-      md5: 33187b7ac84ad558e19c0b00711136a0.dir
-      size: 588622091
-      nfiles: 35
+      md5: 683728b0844863bff56acde7facfaac8.dir
+      size: 455445556
+      nfiles: 36
   evaluate:
     cmd: python src/evaluate.py --config params.yaml --weights
       models/weights/train/weights/best.pt --check-threshold
@@ -85,13 +85,13 @@ stages:
       nfiles: 3446
     - path: models/weights/
       hash: md5
-      md5: 33187b7ac84ad558e19c0b00711136a0.dir
-      size: 588622091
-      nfiles: 35
+      md5: 683728b0844863bff56acde7facfaac8.dir
+      size: 455445556
+      nfiles: 36
     - path: params.yaml
       hash: md5
-      md5: a151844cad39685fd23364896ae6664f
-      size: 765
+      md5: 6277c06acd2a352b0376e625b1bc908a
+      size: 764
     - path: src/evaluate.py
       hash: md5
       md5: e127a4e0f42d4755e93b501cc3360a53
@@ -111,11 +111,11 @@ stages:
       nfiles: 0
     - path: params.yaml
       hash: md5
-      md5: a151844cad39685fd23364896ae6664f
-      size: 765
+      md5: 6277c06acd2a352b0376e625b1bc908a
+      size: 764
     - path: src/train.py
       hash: md5
-      md5: fc4f1f88d3d471051889375b81065068
+      md5: 2f47af562744a122fd8cedaa6407d91b
       size: 3731
     outs:
     - path: metrics/smoke_results.json
@@ -127,3 +127,52 @@ stages:
       md5: d2a9b4532489c8ad166eb8d1915d74a7.dir
       size: 49678852
       nfiles: 21
+  infer:
+    cmd: python src/batch_inference.py --config params.yaml --weights
+      models/weights/train/weights/best.pt
+    deps:
+    - path: data/processed/test/
+      hash: md5
+      md5: 61606ae8a66681f40fd66ba837bd578c.dir
+      size: 247153847
+      nfiles: 3446
+    - path: models/weights/
+      hash: md5
+      md5: 683728b0844863bff56acde7facfaac8.dir
+      size: 455445556
+      nfiles: 36
+    - path: params.yaml
+      hash: md5
+      md5: 6277c06acd2a352b0376e625b1bc908a
+      size: 764
+    - path: src/batch_inference.py
+      hash: md5
+      md5: ecc86490009e78a907cd16b96e7ff00b
+      size: 2371
+    outs:
+    - path: logs/inference_log.csv
+      hash: md5
+      md5: 7d8ca8cb45d4ea0e03092efd27179623
+      size: 71053
+  evaluate_smoke:
+    cmd: python src/evaluate.py --config params.yaml --weights
+      models/smoke_weights/train/weights/best.pt --smoke
+    deps:
+    - path: models/smoke_weights/
+      hash: md5
+      md5: d2a9b4532489c8ad166eb8d1915d74a7.dir
+      size: 49678852
+      nfiles: 21
+    - path: params.yaml
+      hash: md5
+      md5: 6277c06acd2a352b0376e625b1bc908a
+      size: 764
+    - path: src/evaluate.py
+      hash: md5
+      md5: e127a4e0f42d4755e93b501cc3360a53
+      size: 2173
+    outs:
+    - path: metrics/smoke_eval.json
+      hash: md5
+      md5: 2438376afce7f85722a616ba76b35295
+      size: 92
