@@ -2,6 +2,7 @@ import argparse
 import csv
 import time
 from pathlib import Path
+
 import yaml
 from ultralytics import YOLO
 
