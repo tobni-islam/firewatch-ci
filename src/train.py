@@ -10,6 +10,9 @@ import yaml
 from ultralytics import YOLO
 
 
+MLFLOW_TRACKING_URI = "https://dagshub.com/islam_tb/firwatch-ci.mlflow"
+
+
 def set_seeds(seed):
     random.seed(seed)
     np.random.seed(seed)
@@ -29,6 +32,12 @@ def train(cfg, epochs, smoke=False):
 
     out_dir_abs.mkdir(parents=True, exist_ok=True)
     Path("metrics").mkdir(exist_ok=True)
+
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    # Authenticate
+    mlflow.tracking.MlflowClient(
+        tracking_uri=MLFLOW_TRACKING_URI, registry_uri=MLFLOW_TRACKING_URI
+    )
 
     mlflow.set_experiment("firewatch-ci")
     with mlflow.start_run(run_name="smoke-train" if smoke else "full-train") as run:
@@ -55,7 +64,7 @@ def train(cfg, epochs, smoke=False):
                 "degrees": 0.0,
                 "scale": 0.5,
                 "translate": 0.1,
-                "cls": 2.0,
+                "cls": 1.5,
             }.items()
         }
 
