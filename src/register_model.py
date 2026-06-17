@@ -17,8 +17,16 @@ def register_and_promote() -> None:
     with open("metrics/eval_results.json") as f:
         eval_metrics = json.load(f)
 
+    try:
+        versions = client.get_latest_versions(MODEL_NAME, stages=["Production"])
+    except Exception:
+        # Model doesn't exist yet
+        print(f"Model {MODEL_NAME} not found in registry. Creating it.")
+        client.create_registered_model(MODEL_NAME)
+        versions = []
+
     # Archive current Production version before promoting new one
-    for v in client.get_latest_versions(MODEL_NAME, stages=["Production"]):
+    for v in versions:
         client.transition_model_version_stage(MODEL_NAME, v.version, "Archived")
         print(f"Archived previous Production v{v.version}")
 

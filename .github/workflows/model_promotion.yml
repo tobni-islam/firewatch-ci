@@ -42,8 +42,11 @@ jobs:
       - name: Pull trained model from DVC remote
         run: dvc pull models/weights/
 
-      - name: Pull data from DVC
+      - name: Pull val data from DVC
         run: dvc pull data/processed/val
+
+      - name: pull test data from DVC
+        run: dvc pull data/processed/test
 
       - name: Evaluate model on test set
         run: >-
