@@ -53,29 +53,29 @@ stages:
     deps:
     - path: data/processed/
       hash: md5
-      md5: 26e5e1a19f0309b1cdc97255b84548f4.dir
-      size: 2504303442
-      nfiles: 34443
+      md5: fb5d7c88312e088feb2dd528d1efbc2a.dir
+      size: 2512451657
+      nfiles: 34444
     - path: params.yaml
       hash: md5
-      md5: 6277c06acd2a352b0376e625b1bc908a
-      size: 764
+      md5: 2380401b204b1d47f4862f3fdc1bbad5
+      size: 762
     - path: src/train.py
       hash: md5
-      md5: 2f47af562744a122fd8cedaa6407d91b
-      size: 3731
+      md5: fe2e22ad51a1a08fd63baedb1022cacd
+      size: 5320
     outs:
     - path: metrics/train_results.json
       hash: md5
-      md5: 3281dd22be55f7b08e56f014d0b27b15
+      md5: 9d5ec8e4efa32f0555c315e14e5ff900
       size: 134
     - path: models/weights/
       hash: md5
-      md5: 683728b0844863bff56acde7facfaac8.dir
-      size: 455445556
-      nfiles: 36
+      md5: f1332ad0833a626d679b4e2bb3f6da85.dir
+      size: 138992112
+      nfiles: 22
   evaluate:
-    cmd: python src/evaluate.py --config params.yaml --weights
+    cmd: python src/evaluate.py --config params.yaml --weights 
       models/weights/train/weights/best.pt --check-threshold
     deps:
     - path: data/processed/test/
@@ -128,7 +128,7 @@ stages:
       size: 49678852
       nfiles: 21
   infer:
-    cmd: python src/batch_inference.py --config params.yaml --weights
+    cmd: python src/batch_inference.py --config params.yaml --weights 
       models/weights/train/weights/best.pt
     deps:
     - path: data/processed/test/
@@ -155,7 +155,7 @@ stages:
       md5: 7d8ca8cb45d4ea0e03092efd27179623
       size: 71053
   evaluate_smoke:
-    cmd: python src/evaluate.py --config params.yaml --weights
+    cmd: python src/evaluate.py --config params.yaml --weights 
       models/smoke_weights/train/weights/best.pt --smoke
     deps:
     - path: models/smoke_weights/
