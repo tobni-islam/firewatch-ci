@@ -30,7 +30,7 @@ def compare() -> bool:
 
     print(f"Candidate mAP50={new_map:.4f}  smoke={new_smoke:.4f}  fire={new_fire:.4f}")
 
-    smoke_thresh = 0.4
+    smoke_thresh = 0.2
 
     if prod_map == 0.0:
         return True
