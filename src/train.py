@@ -2,7 +2,7 @@ import argparse
 import json
 import random
 from pathlib import Path
-from pandas import pd
+import pandas as pd
 
 import mlflow
 import numpy as np
