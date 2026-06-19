@@ -13,20 +13,16 @@ model:
   img_size: 640
 
 train:
-  epochs: 4
-  batch_size: 16
-  lr0: 0.01
-  weight_decay: 0.005
-  seed: 42
-  mosaic: 1.0      # 4-image mosaic
-  hsv_h: 0.03      # broader hue range
-  hsv_s: 0.8       # saturation variation
-  hsv_v: 0.5       # brightness variation
-  fliplr: 0.5      # horizontal flip
-  degrees: 5.0     # slight rotation
-  scale: 0.5       # scale jitter
-  translate: 0.1
-  cls: 1.5
+  epochs: 25
+  lr0: 0.003
+  mosaic: 0.5
+  hsv_h: 0.015
+  hsv_s: 0.6
+  hsv_v: 0.4
+  degrees: 2.0
+  scale: 0.3
+  translate: 0.05
+  cls: 1.0
 
 smoke_train:
   epochs: 4
