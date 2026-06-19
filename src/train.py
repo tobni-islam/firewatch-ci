@@ -4,16 +4,23 @@ import random
 from pathlib import Path
 
 import mlflow
+import mlflow.pyfunc
 import numpy as np
 import pandas as pd
 import torch
 import yaml
 from ultralytics import YOLO
 
-from src.yolo_mlflow_wrapper import YOLOWrapper
-
 
 MLFLOW_TRACKING_URI = "https://dagshub.com/islam_tb/firewatch-ci.mlflow"
+
+
+class YOLOWrapper(mlflow.pyfunc.PythonModel):
+    def load_context(self, context):
+        self.model = YOLO(context.artifacts["weights"])
+
+    def predict(self, context, model_input):
+        return self.model(model_input)
 
 
 def set_seeds(seed):
