@@ -13,7 +13,7 @@ model:
   img_size: 640
 
 train:
-  epochs: 100
+  epochs: 5
   batch_size: 16
   lr0: 0.01
   weight_decay: 0.005
