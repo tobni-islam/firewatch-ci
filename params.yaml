@@ -14,11 +14,15 @@ model:
 
 train:
   epochs: 25
+  batch_size: 16
   lr0: 0.003
+  weight_decay: 0.005
+  seed: 42
   mosaic: 0.5
   hsv_h: 0.015
   hsv_s: 0.6
   hsv_v: 0.4
+  fliplr: 0.5
   degrees: 2.0
   scale: 0.3
   translate: 0.05
