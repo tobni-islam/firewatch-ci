@@ -14,6 +14,7 @@ def register_and_promote() -> None:
     with open("metrics/train_results.json") as f:
         train_meta = json.load(f)
     run_id = train_meta["run_id"]
+    model_id = train_meta["model_id"]
 
     with open("metrics/eval_results.json") as f:
         eval_metrics = json.load(f)
@@ -25,7 +26,7 @@ def register_and_promote() -> None:
         client.create_registered_model(MODEL_NAME)
 
     # Register new version from the training run
-    mv = mlflow.register_model(f"runs:/{run_id}/model", MODEL_NAME)
+    mv = mlflow.register_model(f"models:/{model_id}", MODEL_NAME)
 
     # Wait until the version is ready before tagging and aliasing it
     for _ in range(30):

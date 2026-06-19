@@ -91,19 +91,13 @@ def train(cfg, epochs, smoke=False):
                 "recall": round(float(rd.get("metrics/recall(B)", 0.0)), 4),
             }
 
-            with open(mfile, "w") as f:
-                json.dump(metrics, f, indent=2)
-
-            print(f"run_id : {run.info.run_id}")
-            print(f"mAP50  : {metrics['mAP50']:.4f}")
-
             mlflow.log_metrics({k: v for k, v in metrics.items() if k != "run_id"})
 
             best_weights = out_dir_abs / "train" / "weights" / "best.pt"
             if best_weights.exists():
                 try:
-                    mlflow.pyfunc.log_model(
-                        artifact_path="model",
+                    model_info = mlflow.pyfunc.log_model(
+                        name="model",
                         python_model=YOLOWrapper(),
                         artifacts={"weights": str(best_weights)},
                         pip_requirements=[
@@ -113,11 +107,20 @@ def train(cfg, epochs, smoke=False):
                             "pandas",
                         ],
                     )
+
+                    metrics["model_id"] = model_info.model_id
                     print("Successfully logged model to MLflow.")
                 except Exception as e:
                     print(f"Failed to log artifact to MLflow: {e}")
             else:
                 print(f"Expected weights file not found at: {best_weights}")
+
+            with open(mfile, "w") as f:
+                json.dump(metrics, f, indent=2)
+
+            print(f"run_id : {run.info.run_id}")
+            print(f"model_id: {metrics.get('model_id', 'N/A')}")
+            print(f"mAP50  : {metrics['mAP50']:.4f}")
 
             csv_file = out_dir_abs / "train" / "results.csv"
             if csv_file.exists():
