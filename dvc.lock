@@ -58,21 +58,21 @@ stages:
       nfiles: 34444
     - path: params.yaml
       hash: md5
-      md5: 2380401b204b1d47f4862f3fdc1bbad5
+      md5: 175e61cf5ddc52dac76446fd71e90322
       size: 762
     - path: src/train.py
       hash: md5
-      md5: fe2e22ad51a1a08fd63baedb1022cacd
-      size: 5320
+      md5: 98bc0be55dcb53bc4da24fcbbf69124d
+      size: 5928
     outs:
     - path: metrics/train_results.json
       hash: md5
-      md5: 9d5ec8e4efa32f0555c315e14e5ff900
-      size: 134
+      md5: 68445fd6a9a15eece77e7f393c5901d8
+      size: 186
     - path: models/weights/
       hash: md5
-      md5: f1332ad0833a626d679b4e2bb3f6da85.dir
-      size: 138992112
+      md5: 31cd7fdc420811e918a69c6a0cd0dfb2.dir
+      size: 138975351
       nfiles: 22
   evaluate:
     cmd: python src/evaluate.py --config params.yaml --weights 

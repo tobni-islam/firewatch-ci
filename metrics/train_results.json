@@ -1,7 +1,8 @@
 {
-  "run_id": "fcafe70869dc4366b59b4e62d38eb184",
-  "mAP50": 0.6574,
-  "mAP50_95": 0.3312,
-  "precision": 0.6663,
-  "recall": 0.6135
+  "run_id": "d83a052a9cf04c019d81e42266626268",
+  "mAP50": 0.6227,
+  "mAP50_95": 0.3025,
+  "precision": 0.6088,
+  "recall": 0.6003,
+  "model_id": "m-fdd127e463c444f384f81756b93bbebd"
 }
