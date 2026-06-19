@@ -13,7 +13,7 @@ model:
   img_size: 640
 
 train:
-  epochs: 5
+  epochs: 4
   batch_size: 16
   lr0: 0.01
   weight_decay: 0.005
@@ -29,7 +29,7 @@ train:
   cls: 1.5
 
 smoke_train:
-  epochs: 5
+  epochs: 4
   batch_size: 8
 
 evaluate:

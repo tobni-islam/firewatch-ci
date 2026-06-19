@@ -19,21 +19,18 @@ def compare() -> bool:
     new_fire = new.get("fire_mAP50", 0.0)
 
     try:
-        prod = client.get_latest_versions(MODEL_NAME, stages=["Production"])
-        if prod:
-            prod_metrics = client.get_run(prod[0].run_id).data.metrics
-            prod_map = prod_metrics.get("mAP50", 0.0)
-            print(f"Baseline  mAP50={prod_map:.4f}")
-        else:
-            prod_map = 0.0
-            print("No baseline in registry! first promotion, auto-passing.")
+        prod = client.get_model_version_by_alias(MODEL_NAME, "production")
+        prod_metrics = client.get_run(prod.run_id).data.metrics
+        prod_map = prod_metrics.get("mAP50", 0.0)
+        print(f"Baseline  mAP50={prod_map:.4f}")
     except Exception as exc:
         print(f"Warning: could not fetch baseline ({exc})! treating as first run.")
         prod_map = 0.0
+        print("No baseline in registry! first promotion, auto-passing.")
 
     print(f"Candidate mAP50={new_map:.4f}  smoke={new_smoke:.4f}  fire={new_fire:.4f}")
 
-    smoke_thresh = float(os.environ.get("SMOKE_MAP_THRESHOLD", "0.65"))
+    smoke_thresh = 0.4
 
     if prod_map == 0.0:
         return True

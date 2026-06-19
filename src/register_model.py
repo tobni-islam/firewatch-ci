@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 import mlflow
 from mlflow.tracking import MlflowClient
@@ -18,29 +19,30 @@ def register_and_promote() -> None:
         eval_metrics = json.load(f)
 
     try:
-        versions = client.get_latest_versions(MODEL_NAME, stages=["Production"])
+        client.get_registered_model(MODEL_NAME)
     except Exception:
-        # Model doesn't exist yet
         print(f"Model {MODEL_NAME} not found in registry. Creating it.")
         client.create_registered_model(MODEL_NAME)
-        versions = []
 
-    # Archive current Production version before promoting new one
-    for v in versions:
-        client.transition_model_version_stage(MODEL_NAME, v.version, "Archived")
-        print(f"Archived previous Production v{v.version}")
-
-    # Register new version from the Colab/Kaggle training run
+    # Register new version from the training run
     mv = mlflow.register_model(f"runs:/{run_id}/model", MODEL_NAME)
+
+    # Wait until the version is ready before tagging and aliasing it
+    for _ in range(30):
+        current = client.get_model_version(MODEL_NAME, mv.version)
+        if current.status == "READY":
+            break
+        time.sleep(2)
 
     # Tag with evaluation metrics for full traceability in the Registry UI
     for key, val in eval_metrics.items():
         client.set_model_version_tag(MODEL_NAME, mv.version, key, str(val))
 
-    client.transition_model_version_stage(MODEL_NAME, mv.version, "Production")
+    # Point the production alias to the newly registered version
+    client.set_registered_model_alias(MODEL_NAME, "production", mv.version)
 
     print(f"Registered   {MODEL_NAME} v{mv.version}  run={run_id}")
-    print("Promoted to  Production")
+    print("Promoted to  production")
     print(f"  fire_mAP50:  {eval_metrics.get('fire_mAP50',  'N/A')}")
     print(f"  smoke_mAP50: {eval_metrics.get('smoke_mAP50', 'N/A')}")
 

@@ -2,13 +2,15 @@ import argparse
 import json
 import random
 from pathlib import Path
-import pandas as pd
 
 import mlflow
 import numpy as np
+import pandas as pd
 import torch
 import yaml
 from ultralytics import YOLO
+
+from src.yolo_mlflow_wrapper import YOLOWrapper
 
 
 MLFLOW_TRACKING_URI = "https://dagshub.com/islam_tb/firewatch-ci.mlflow"
@@ -35,10 +37,6 @@ def train(cfg, epochs, smoke=False):
     Path("metrics").mkdir(exist_ok=True)
 
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    # Authenticate
-    mlflow.tracking.MlflowClient(
-        tracking_uri=MLFLOW_TRACKING_URI, registry_uri=MLFLOW_TRACKING_URI
-    )
 
     mlflow.set_experiment("firewatch-ci")
     with mlflow.start_run(run_name="smoke-train" if smoke else "full-train") as run:
@@ -88,6 +86,7 @@ def train(cfg, epochs, smoke=False):
 
             with open(mfile, "w") as f:
                 json.dump(metrics, f, indent=2)
+
             print(f"run_id : {run.info.run_id}")
             print(f"mAP50  : {metrics['mAP50']:.4f}")
 
@@ -96,8 +95,18 @@ def train(cfg, epochs, smoke=False):
             best_weights = out_dir_abs / "train" / "weights" / "best.pt"
             if best_weights.exists():
                 try:
-                    mlflow.log_artifact(str(best_weights), artifact_path="model")
-                    print("Successfully logged weights artifact to MLflow.")
+                    mlflow.pyfunc.log_model(
+                        artifact_path="model",
+                        python_model=YOLOWrapper(),
+                        artifacts={"weights": str(best_weights)},
+                        pip_requirements=[
+                            "ultralytics",
+                            "torch",
+                            "numpy",
+                            "pandas",
+                        ],
+                    )
+                    print("Successfully logged model to MLflow.")
                 except Exception as e:
                     print(f"Failed to log artifact to MLflow: {e}")
             else:
@@ -113,21 +122,19 @@ def train(cfg, epochs, smoke=False):
                     mlflow.log_metric(
                         "train_box_loss", float(row["train/box_loss"]), step=step
                     )
-
                     mlflow.log_metric(
                         "val_box_loss", float(row["val/box_loss"]), step=step
                     )
-
                     mlflow.log_metric(
                         "mAP50", float(row["metrics/mAP50(B)"]), step=step
                     )
-
                     mlflow.log_metric(
                         "precision", float(row["metrics/precision(B)"]), step=step
                     )
                     mlflow.log_metric(
                         "recall", float(row["metrics/recall(B)"]), step=step
                     )
+
                 print("Successfully logged training metrics from CSV to MLflow.")
             else:
                 print(f"Expected CSV file not found at: {csv_file}")
