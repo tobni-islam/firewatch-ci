@@ -13,9 +13,9 @@ model:
   img_size: 640
 
 train:
-  epochs: 25
+  epochs: 50
   batch_size: 16
-  lr0: 0.003
+  lr0: 0.005
   weight_decay: 0.005
   seed: 42
   mosaic: 0.5
@@ -26,7 +26,7 @@ train:
   degrees: 2.0
   scale: 0.3
   translate: 0.05
-  cls: 1.0
+  cls: 1.5
 
 smoke_train:
   epochs: 4
