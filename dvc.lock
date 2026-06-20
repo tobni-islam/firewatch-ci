@@ -58,7 +58,7 @@ stages:
       nfiles: 34444
     - path: params.yaml
       hash: md5
-      md5: db6f3929259ab56ece1128d26261f73e
+      md5: e1ee50a103a20c0a71139c0c0a7e3665
       size: 595
     - path: src/train.py
       hash: md5
@@ -67,13 +67,13 @@ stages:
     outs:
     - path: metrics/train_results.json
       hash: md5
-      md5: a9732371cb603171534c72aeceb41041
+      md5: 753e47e140d380833d612b6b4d01b5bb
       size: 186
     - path: models/weights/
       hash: md5
-      md5: 3ce44a46f6a8fdbceb638b15c151ffd9.dir
-      size: 319172595
-      nfiles: 27
+      md5: 964d946ec05cb3a07b4ed4235a61467e.dir
+      size: 386098028
+      nfiles: 29
   evaluate:
     cmd: python src/evaluate.py --config params.yaml --weights 
       models/weights/train/weights/best.pt --check-threshold
