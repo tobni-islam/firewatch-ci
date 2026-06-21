@@ -1,21 +1,9 @@
 import cv2
 import os
-import shutil
 import numpy as np
 import bentoml
 from bentoml.io import Image, JSON
 from PIL import Image as PILImage
-
-
-def register_model_to_bentoml():
-    model_name = "firewatch-detector"
-    local_weights_path = "models/weights/train/weights/best.pt"
-
-    # creating an isolated, tracked model entity inside BentoML
-    with bentoml.models.create(model_name) as bento_model:
-        dest = os.path.join(bento_model.path, "best.pt")
-        shutil.copy(local_weights_path, dest)
-        print(f"Model successfully saved to Bento Store as: {bento_model.tag}")
 
 
 CLASS_NAMES = ["fire", "smoke"]
@@ -30,7 +18,6 @@ class FireWatchRunnable(bentoml.Runnable):
     def __init__(self):
         from ultralytics import YOLO
 
-        register_model_to_bentoml()
         bento_model = bentoml.models.get("firewatch-detector:latest")
         model_path = os.path.join(bento_model.path, "best.pt")
         self.model = YOLO(model_path)
