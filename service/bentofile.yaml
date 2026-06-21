@@ -5,8 +5,10 @@ labels:
 
 include:
   - "service/"
-  - "models/weights/train/weights/best.pt"
   - "params.yaml"
+
+models:
+  - firewatch_yolo:latest
 
 python:
   packages:
