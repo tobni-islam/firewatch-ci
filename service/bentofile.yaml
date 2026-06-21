@@ -8,7 +8,7 @@ include:
   - "params.yaml"
 
 models:
-  - firewatch_yolo:latest
+  - firewatch-detector:latest
 
 python:
   packages:
