@@ -11,7 +11,6 @@ import torch
 import yaml
 from ultralytics import YOLO
 
-
 MLFLOW_TRACKING_URI = "https://dagshub.com/islam_tb/firewatch-ci.mlflow"
 
 

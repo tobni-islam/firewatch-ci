@@ -1,5 +1,6 @@
 import os
 import shutil
+
 import bentoml
 
 model_name = "firewatch-detector"
