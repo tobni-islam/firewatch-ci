@@ -1,31 +1,37 @@
-name: Drift Report
+name: Weekly Drift Report
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 6 * * *' # daily at 06:00 UTC
+    - cron: "0 9 * * 1"   # Every Monday at 09:00 UTC
+  workflow_dispatch:         # Manual trigger button in GitHub Actions UI
 
 jobs:
-  report:
-    name: Generate Drift Report
+  generate-drift-report:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
         with:
-          python-version: '3.11'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate placeholder drift report
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install evidently pandas numpy
+
+      - name: Generate drift report
+        run: python src/monitoring/drift_report.py
+
+      - name: Commit report to repo
         run: |
-          mkdir -p reports
-          echo "Drift report generated at $(date -u)" > reports/drift_report.txt
-          cat reports/drift_report.txt
-
-      - name: Upload report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: drift-report
-          path: reports/
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add reports/
+          git diff --staged --quiet || \
+            git commit -m "data(fw-monitor): weekly drift report $(date +%Y-%m-%d) [skip ci]"
+          git push
