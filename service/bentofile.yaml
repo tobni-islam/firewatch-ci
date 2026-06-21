@@ -1,0 +1,16 @@
+service: "service.service:svc"
+labels:
+  owner: islam_tb
+  project: firewatch-ci
+
+include:
+  - "service/"
+  - "models/weights/train/weights/best.pt"
+  - "params.yaml"
+
+python:
+  packages:
+    - ultralytics
+    - opencv-python-headless
+    - numpy
+    - pyyaml
