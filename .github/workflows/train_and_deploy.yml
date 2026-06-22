@@ -58,18 +58,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install dvc ultralytics mlflow pyyaml numpy
+          pip install ultralytics mlflow pyyaml numpy
 
-      - name: Configure DVC remote credentials
-        run: |
-          dvc remote modify origin --local auth basic
-          dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
-          dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
 
-      - name: Pull sample data
-        run: dvc pull data/sample/
-
-      - name: Run smoke train (5 epochs)
+      - name: Run smoke train (4 epochs)
         run: python src/train.py --config params.yaml --smoke
 
       - name: Evaluate smoke model
