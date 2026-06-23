@@ -5,7 +5,7 @@
 - Actions run: https://github.com/tobni-islam/firewatch-ci/actions/runs/27977504402/job/82798963955?pr=4
 - Result: PASS - both jobs green
 - smoke-train mAP50: 0.1849
-- Date: 22/06/2026
+- Date: <22/06/2026>
 
 ## Model-triggered run (model_promotion.yml)
 - Source run: https://github.com/tobni-islam/firewatch-ci/actions/runs/27859844445
