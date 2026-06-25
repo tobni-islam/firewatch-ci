@@ -1,4 +1,11 @@
 stages:
+  validate:
+    cmd: python src/validate_data.py --config params.yaml
+    deps: [src/validate_data.py, data/raw/, params.yaml]
+    outs:
+      - data/validate_report.json:
+          cache: false
+
   preprocess:
     cmd: python src/preprocess.py --config params.yaml
     deps: [src/preprocess.py, data/raw/, params.yaml]

@@ -1,0 +1,38 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "check": "image_label_pairs",
+      "total_images": 14122,
+      "missing_labels": 0,
+      "passed": true,
+      "sample_missing": []
+    },
+    {
+      "check": "image_readable",
+      "sample_checked": 200,
+      "corrupt": 0,
+      "passed": true,
+      "sample_corrupt": []
+    },
+    {
+      "check": "label_schema",
+      "total_labels": 14122,
+      "bad_files": 0,
+      "passed": true,
+      "sample_bad": []
+    },
+    {
+      "check": "class_distribution",
+      "fire_count": 7794,
+      "smoke_count": 9638,
+      "passed": true
+    },
+    {
+      "check": "row_count",
+      "count": 14122,
+      "min_expected": 1000,
+      "passed": true
+    }
+  ]
+}

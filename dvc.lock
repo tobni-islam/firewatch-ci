@@ -10,8 +10,8 @@ stages:
       nfiles: 43055
     - path: params.yaml
       hash: md5
-      md5: 6277c06acd2a352b0376e625b1bc908a
-      size: 764
+      md5: e1ee50a103a20c0a71139c0c0a7e3665
+      size: 595
     - path: src/preprocess.py
       hash: md5
       md5: 9587bb491fa3fbd42418df9df406f6c0
@@ -19,13 +19,13 @@ stages:
     outs:
     - path: data/processed/
       hash: md5
-      md5: 26e5e1a19f0309b1cdc97255b84548f4.dir
-      size: 2504303442
-      nfiles: 34443
+      md5: 23aa316d4e019cfb3322895ffb4a361f.dir
+      size: 2502506262
+      nfiles: 34442
     - path: data/stats.json
       hash: md5
-      md5: a51f4184c9168434f50983ba0d645a44
-      size: 178
+      md5: 1e06de75110906a19a657fb7cc3ed6f2
+      size: 177
   augment:
     cmd: python src/augment.py --config params.yaml
     deps:
@@ -75,7 +75,7 @@ stages:
       size: 386098028
       nfiles: 29
   evaluate:
-    cmd: python src/evaluate.py --config params.yaml --weights 
+    cmd: python src/evaluate.py --config params.yaml --weights
       models/weights/train/weights/best.pt --check-threshold
     deps:
     - path: data/processed/test/
@@ -128,7 +128,7 @@ stages:
       size: 49678852
       nfiles: 21
   infer:
-    cmd: python src/batch_inference.py --config params.yaml --weights 
+    cmd: python src/batch_inference.py --config params.yaml --weights
       models/weights/train/weights/best.pt
     deps:
     - path: data/processed/test/
@@ -155,7 +155,7 @@ stages:
       md5: 7d8ca8cb45d4ea0e03092efd27179623
       size: 71053
   evaluate_smoke:
-    cmd: python src/evaluate.py --config params.yaml --weights 
+    cmd: python src/evaluate.py --config params.yaml --weights
       models/smoke_weights/train/weights/best.pt --smoke
     deps:
     - path: models/smoke_weights/
@@ -176,3 +176,24 @@ stages:
       hash: md5
       md5: 2438376afce7f85722a616ba76b35295
       size: 92
+  validate:
+    cmd: python src/validate_data.py --config params.yaml
+    deps:
+    - path: data/raw/
+      hash: md5
+      md5: da9f257afa710af341ae78fcdc6270d4.dir
+      size: 3118334483
+      nfiles: 43055
+    - path: params.yaml
+      hash: md5
+      md5: e1ee50a103a20c0a71139c0c0a7e3665
+      size: 595
+    - path: src/validate_data.py
+      hash: md5
+      md5: b3b29d04c8eb9c324afca0436142a2b8
+      size: 3191
+    outs:
+    - path: data/validate_report.json
+      hash: md5
+      md5: 2c53ab87cbc864416d45c060db703b0c
+      size: 716

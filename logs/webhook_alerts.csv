@@ -1,0 +1,3 @@
+timestamp,alert_level,source,num_detections
+1782400169.516557,HIGH,detect-endpoint,1
+1782400514.757596,HIGH,manual-test,0
