@@ -1,14 +1,24 @@
 import cv2
 import os
 import numpy as np
+import csv
 import bentoml
 from bentoml.io import Image, JSON
 from PIL import Image as PILImage
+from datetime import datetime, timezone
+from pathlib import Path
+
+import httpx
+from pydantic import BaseModel, Field
 
 
 CLASS_NAMES = ["fire", "smoke"]
 ALERT_THRESHOLD = 0.7
 MODEL_PATH = "models/weights/train/weights/best.pt"
+
+
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL")  # http://localhost:3000/webhook_fire
+WEBHOOK_LOG = Path("logs/webhook_alerts.csv")
 
 
 class FireWatchRunnable(bentoml.Runnable):
@@ -54,9 +64,59 @@ async def detect(image: PILImage.Image) -> dict:
         "HIGH" if any(d["confidence"] >= ALERT_THRESHOLD for d in detections) else "LOW"
     )
 
+    await _maybe_trigger_webhook(alert_level, detections)
+
     return {
         "detections": detections,
         "num_detections": len(detections),
         "alert_level": alert_level,
         "classes_detected": list({d["class"] for d in detections}),
     }
+
+
+class FireAlert(BaseModel):
+    alert_level: str = Field(..., pattern="^(HIGH|LOW)$")
+    source: str = "unknown"
+    detections: list = []
+    timestamp: float = Field(
+        default_factory=lambda: datetime.now(timezone.utc).timestamp()
+    )
+
+
+def _log_alert(alert: "FireAlert") -> None:
+    WEBHOOK_LOG.parent.mkdir(exist_ok=True)
+    is_new = not WEBHOOK_LOG.exists()
+    with open(WEBHOOK_LOG, "a", newline="") as f:
+        writer = csv.writer(f)
+        if is_new:
+            writer.writerow(["timestamp", "alert_level", "source", "num_detections"])
+        writer.writerow(
+            [alert.timestamp, alert.alert_level, alert.source, len(alert.detections)]
+        )
+
+
+@svc.api(input=JSON(pydantic_model=FireAlert), output=JSON())
+def webhook_fire(alert: FireAlert) -> dict:
+    """Manually-testable alert endpoint. Logs to logs/webhook_alerts.csv."""
+    _log_alert(alert)
+    return {
+        "status": "received",
+        "alert_level": alert.alert_level,
+        "logged_to": str(WEBHOOK_LOG),
+    }
+
+
+async def _maybe_trigger_webhook(alert_level: str, detections: list) -> None:
+    """Fire-and-forget internal trigger. Never raises, never blocks /detect."""
+    if not WEBHOOK_URL or alert_level != "HIGH":
+        return
+    payload = {
+        "alert_level": alert_level,
+        "source": "detect-endpoint",
+        "detections": detections,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=2.0) as client:
+            await client.post(WEBHOOK_URL, json=payload)
+    except Exception as e:
+        print(f"webhook call failed (non-fatal): {e}")
